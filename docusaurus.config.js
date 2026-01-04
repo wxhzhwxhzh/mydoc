@@ -1,33 +1,54 @@
 // @ts-check
+// 引入代码高亮主题
 const { themes } = require('prism-react-renderer');
+// 引入数学公式插件
+const math = require('remark-math');
+const katex = require('rehype-katex');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'IT知识学习网站',
-  tagline: '编程教程学习平台',
+  // --- 基础信息 ---
+  title: 'Fuer Yang',
+  tagline: 'Geophysics | InSAR | Fault Inversion', // 你的学术标签
   favicon: 'img/favicon.ico',
 
-  url: 'https://your-domain.com',
-  // baseUrl  需要改成你的仓库名，如果你启用了GitHub Pages，请改成你的仓库名,默认是/
-  baseUrl: 'mydoc',
-  // 对于死链接，默认是warn，可以改成其他的选项，比如ignore,throw
-  onBrokenLinks: 'warn',
+  // --- GitHub Pages 部署配置 ---
+  url: 'https://wxhzhwxhzh.github.io', 
+  baseUrl: '/FuerYang/', // 你的仓库名，必须前后有斜杠
+  organizationName: 'wxhzhwxhzh', 
+  projectName: 'FuerYang',
+  deploymentBranch: 'gh-pages',
+  trailingSlash: false,
 
+  onBrokenLinks: 'warn', // 链接错误时警告而不是报错停止
   i18n: {
     defaultLocale: 'zh-CN',
     locales: ['zh-CN'],
   },
 
-  themes: [
+  // --- 插件配置 ---
+  plugins: [
+    // 搜索插件（你原本选择的）
     [
       require.resolve("@easyops-cn/docusaurus-search-local"),
       {
         hashed: true,
-        language: ["en", "zh"], // 支持中英文
-        indexBlog: true, // 是否索引博客
+        language: ["en", "zh"],
+        indexBlog: true,
         indexDocs: true,
       },
     ],
+  ],
+
+  // --- 数学公式样式表 ---
+  stylesheets: [
+    {
+      href: 'https://cdn.jsdelivr.net/npm/katex@0.13.24/dist/katex.min.css',
+      type: 'text/css',
+      integrity:
+        'sha384-odtC+0UGzzFL/6PNoE8rX/SPcQDXBJ+uRepguP4QkPCm2LBxH3FA3y+fKSiJ+AmM',
+      crossorigin: 'anonymous',
+    },
   ],
 
   presets: [
@@ -37,8 +58,18 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
+          // 开启文档部分的数学公式支持
+          remarkPlugins: [math],
+          rehypePlugins: [katex],
         },
-        blog: false, // 禁用博客
+        blog: {
+          showReadingTime: true,
+          blogSidebarTitle: '近期随笔',
+          blogSidebarCount: 'ALL',
+          // 开启博客部分的数学公式支持
+          remarkPlugins: [math],
+          rehypePlugins: [katex],
+        },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
@@ -49,80 +80,87 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      // --- 顶部导航栏 ---
       navbar: {
-        title: 'IT知识学习网站',
+        title: 'Fuer Yang', // 网站左上角标题
         logo: {
           alt: 'Logo',
-          src: 'img/logo.svg',
+          src: 'img/logo.svg', // 建议后续换成你的头像
         },
         items: [
-          
+          // 左侧主要导航
           {
-            to: '/docs/0',
-            label: '📘文档',
+            type: 'doc',
+            docId: 'intro', // 默认跳转到 docs/intro.md
             position: 'left',
+            label: '📚 科研笔记',
           },
-          // 类型3：下拉菜单
           {
-            type: 'dropdown',
-            label: '更多',
-            position: 'left',
-            items: [
-              {
-                label: 'github',
-                to: 'https://github.com/wxhzhwxhzh',
-              },
-              {
-                label: '文档',
-                to: '/docs/0',
-              },
-              {
-                label: 'AIChatOS',
-                href: 'https://cht18.aichatosclx.com/',
-              },
-
-            ],
+            to: '/blog', 
+            label: '💡 思考与随笔', 
+            position: 'left'
           },
-          //右边链接
-          // 类型6：搜索框
           {
-            type: 'search',
-            position: 'right',
+            to: '/about', // 指向 src/pages/about.md
+            label: '🧑‍🎓 个人简历', 
+            position: 'left'
           },
 
-          // 类型7：语言切换
-          {
-            type: 'localeDropdown',
-            position: 'right',
-          },
+          // 右侧链接
           {
             href: 'https://github.com/wxhzhwxhzh',
             label: 'GitHub',
             position: 'right',
           },
+          // 语言切换（如果你以后想做双语版）
+          {
+            type: 'localeDropdown',
+            position: 'right',
+          },
         ],
       },
 
+      // --- 底部页脚 ---
       footer: {
         style: 'dark',
-        copyright: `Copyright © ${new Date().getFullYear()} IT知识学习网站`,
+        links: [
+          {
+            title: '科研方向',
+            items: [
+              { label: 'InSAR 数据处理', to: '/docs/intro' },
+              { label: '断层滑动反演', to: '/docs/intro' },
+            ],
+          },
+          {
+            title: '联系方式',
+            items: [
+              { label: 'GitHub', href: 'https://github.com/wxhzhwxhzh' },
+              // 可以加邮箱 { label: 'Email', href: 'mailto:your@email.com' },
+            ],
+          },
+          {
+            title: '更多',
+            items: [
+              { label: '博客', to: '/blog' },
+            ],
+          },
+        ],
+        copyright: `Copyright © ${new Date().getFullYear()} Fuer Yang. Built with Docusaurus.`,
       },
 
+      // --- 代码高亮配置 ---
       prism: {
-        theme: themes.github,
-        darkTheme: themes.nightOwl,
+        theme: themes.github,    // 亮色模式主题
+        darkTheme: themes.nightOwl, // 暗色模式主题
+        // 关键：添加 MATLAB, Python, LaTeX, Shell 支持
+        additionalLanguages: ['matlab', 'python', 'latex', 'bash', 'powershell'],
       },
-      // -----------插件----------
-      plugins: [
-        '@docusaurus/plugin-search',
-        // 其他插件...
-      ],
 
-      // ---------- 公告栏 ----------
+      // --- 公告栏 (可选，不需要可以注释掉) ---
       announcementBar: {
-        id: 'support_us',
+        id: 'welcome',
         content:
-          '⭐️ 如果你喜欢这个网站，请在 <a target="_blank" rel="noopener noreferrer" href="https://github.com/wxhzhwxhzh">GitHub</a> 给我们一个 Star！',
+          '👋 欢迎来到我的科研主页，这里记录了 InSAR 处理与断层反演的学习历程。',
         backgroundColor: '#fafbfc',
         textColor: '#091E42',
         isCloseable: true,
